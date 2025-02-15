@@ -3,6 +3,7 @@ package dbscan
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 type startScannerFunc func(rs *RowScanner, dstValue reflect.Value) error
@@ -137,7 +138,7 @@ func (rs *RowScanner) scanStruct(structValue reflect.Value) error {
 	for i, column := range rs.columns {
 		fieldIndex, ok := rs.columnToFieldIndex[column]
 		if !ok {
-			if rs.api.allowUnknownColumns {
+			if rs.api.allowUnknownColumns || strings.HasSuffix(column, "_") {
 				var tmp noOpScanType
 				rs.scans[i] = &tmp
 				continue
